@@ -20,9 +20,7 @@ def generate_password():
     numbers_list = [random.choice(numbers) for item in range(nr_numbers)]
     password_list = letter_list + symbols_list + numbers_list
 
-
     random.shuffle(password_list)
-
     password = ""
     for char in password_list:
       password += char
