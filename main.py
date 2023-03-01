@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import random
 import pyperclip
+import json
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def generate_password():
@@ -37,18 +38,39 @@ def save_password():
     website = website_input.get()
     username = username_input.get()
     password = password_input.get()
+    new_data = {
+        website: {
+            "username": username,
+            "password": password,
+        }
+    }
 
     if len(username) == 0 or len(website) == 0 or len(password) == 0:
         messagebox.showwarning(title="error", message="one or more fields are empty")
     else:
-        is_okay = messagebox.askokcancel(title=website, message=f"Details to save:\nEmail: {username}\nPassword: "
-                                                      f"{password}\n is it okay to save")
-        if is_okay:
-            with open("myfile.txt", "a") as data_file:
-                data_file.write(f"{username}| {website} | {password}\n")
-                website_input.delete(0, END)
-                username_input.delete(0, END)
-                password_input.delete(0, END)
+        try:
+            with open("myfile.json", "r") as data_file:
+                data = json.load(data_file)
+        except FileNotFoundError:
+            with open("myfile.json", "w") as data_file:
+                json.dump(data, data_file, indent=4)
+        else:
+            data.update(new_data)
+
+            with open("myfile.json", "w") as data_file:
+                json.dump(data, data_file, indent=4)
+        finally:
+            website_input.delete(0, END)
+            username_input.delete(0, END)
+            password_input.delete(0, END)
+        # is_okay = messagebox.askokcancel(title=website, message=f"Details to save:\nEmail: {username}\nPassword: "
+        #                                               f"{password}\n is it okay to save")
+        # if is_okay:
+        #     with open("myfile.txt", "a") as data_file:
+        #         data_file.write(f"{username}| {website} | {password}\n")
+        #         website_input.delete(0, END)
+        #         username_input.delete(0, END)
+        #         password_input.delete(0, END)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
